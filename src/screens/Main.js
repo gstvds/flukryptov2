@@ -7,19 +7,22 @@ import {
   ActivityIndicator,
   FlatList
 } from "react-native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import axios from "axios";
 
+import CustomHeaderButton from "../components/HeaderButton";
+
 const MainScreen = props => {
-  // const [cryptoData, setCryptoData] = useState([]);
-  // const [usdPrice, setUsdPrice] = useState([]);
-  // const [eurPrice, setEurPrice] = useState([]);
+  const [cryptoData, setCryptoData] = useState([]);
+  const [usdPrice, setUsdPrice] = useState([]);
+  const [eurPrice, setEurPrice] = useState([]);
   const [allData, setAllData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   let keyData = [];
-  // let currencyValue = {
-  //   usdValue: [],
-  //   eurValue: []
-  // };
+  let currencyValue = {
+    usdValue: [],
+    eurValue: []
+  };
   let allFetchedData = {
     data: [],
     usd: [],
@@ -34,7 +37,7 @@ const MainScreen = props => {
     for (var [key, value] of Object.entries(CryptoData)) {
       keyData.push(value.CoinInfo.Name);
     }
-    // setCryptoData(keyData);
+    setCryptoData(keyData);
     const currency = "USD,EUR";
     const response = await axios.get(
       `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${keyData}&tsyms=${currency}`,
@@ -47,15 +50,15 @@ const MainScreen = props => {
     );
     const responseData = await response.data;
     for (var [key, value] of Object.entries(responseData)) {
-      // currencyValue.usdValue.push(value.USD);
-      // currencyValue.eurValue.push(value.EUR);
+      currencyValue.usdValue.push(value.USD);
+      currencyValue.eurValue.push(value.EUR);
       allFetchedData.data.push(key);
       allFetchedData.usd.push(value.USD);
       allFetchedData.eur.push(value.EUR);
       setAllData(allFetchedData);
     }
-    // setUsdPrice(currencyValue.usdValue);
-    // setEurPrice(currencyValue.eurValue);
+    setUsdPrice(currencyValue.usdValue);
+    setEurPrice(currencyValue.eurValue);
     console.log(allData);
   };
 
@@ -67,6 +70,16 @@ const MainScreen = props => {
     }
     loadData();
   }, []);
+
+  function List({ data, usd, eur }) {
+    return (
+      <View>
+        <Text style={styles.flatText}>{data}</Text>
+        <Text style={styles.flatText}>{usd}</Text>
+        <Text style={styles.flatText}>{eur}</Text>
+      </View>
+    );
+  }
 
   return isLoading ? (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -86,18 +99,14 @@ const MainScreen = props => {
         <Text style={styles.titleText}>Valor em EUR</Text>
       </View>
       <View style={styles.listContainer}>
-        <FlatList
+        {/* <FlatList
           data={allData}
           renderItem={({ itemData }) => (
-            <View>
-              <Text style={styles.flatText}>{itemData.data}</Text>
-              <Text style={styles.flatText}>{itemData.usd}</Text>
-              <Text style={styles.flatText}>{itemData.eur}</Text>
-            </View>
+            <List data={itemData.data} usd={itemData.usd} eur={itemData.eur} />
           )}
           keyExtractor={itemData => itemData}
-        />
-        {/* <FlatList
+        /> */}
+        <FlatList
           data={cryptoData}
           renderItem={({ item }) => (
             <View>
@@ -119,7 +128,7 @@ const MainScreen = props => {
             <Text style={styles.flatText}>{JSON.stringify(item)}</Text>
           )}
           keyExtractor={item => item.toString()}
-        /> */}
+        />
       </View>
     </View>
   );
@@ -127,7 +136,12 @@ const MainScreen = props => {
 
 MainScreen.navigationOptions = navData => {
   return {
-    headerTitle: "Cryptocurrency"
+    headerTitle: "Cryptocurrency",
+    headerRight: (
+      <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+        <Item title="Logout" iconName="ios-log-out" onPress={() => {}} />
+      </HeaderButtons>
+    )
   };
 };
 
