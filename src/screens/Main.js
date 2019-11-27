@@ -11,6 +11,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import axios from "axios";
 
 import CustomHeaderButton from "../components/HeaderButton";
+import Initial from "../models/initial-data";
 
 const MainScreen = props => {
   const [cryptoData, setCryptoData] = useState([]);
@@ -23,11 +24,14 @@ const MainScreen = props => {
     usdValue: [],
     eurValue: []
   };
-  let allFetchedData = {
+
+  let customData = {
     data: [],
     usd: [],
     eur: []
   };
+
+  const allFetchedData = [];
 
   const dataHandler = async () => {
     const Crypto = await axios.get(
@@ -52,11 +56,14 @@ const MainScreen = props => {
     for (var [key, value] of Object.entries(responseData)) {
       currencyValue.usdValue.push(value.USD);
       currencyValue.eurValue.push(value.EUR);
-      allFetchedData.data.push(key);
-      allFetchedData.usd.push(value.USD);
-      allFetchedData.eur.push(value.EUR);
-      setAllData(allFetchedData);
+      customData.data.push(key);
+      customData.usd.push(value.USD);
+      customData.eur.push(value.EUR);
     }
+    allFetchedData.push(
+      new Initial(customData.data, customData.usd, customData.eur)
+    );
+    setAllData(allFetchedData);
     setUsdPrice(currencyValue.usdValue);
     setEurPrice(currencyValue.eurValue);
     console.log(allData);
@@ -99,13 +106,6 @@ const MainScreen = props => {
         <Text style={styles.titleText}>Valor em EUR</Text>
       </View>
       <View style={styles.listContainer}>
-        {/* <FlatList
-          data={allData}
-          renderItem={({ itemData }) => (
-            <List data={itemData.data} usd={itemData.usd} eur={itemData.eur} />
-          )}
-          keyExtractor={itemData => itemData}
-        /> */}
         <FlatList
           data={cryptoData}
           renderItem={({ item }) => (
@@ -129,6 +129,17 @@ const MainScreen = props => {
           )}
           keyExtractor={item => item.toString()}
         />
+        {/* <FlatList
+            data={allData}
+            renderItem={({ itemData }) => (
+              <List
+                data={itemData.data}
+                usd={itemData.usd}
+                eur={itemData.eur}
+              />
+            )}
+            keyExtractor={itemData => itemData}
+          /> */}
       </View>
     </View>
   );
