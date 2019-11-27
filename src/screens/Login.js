@@ -1,11 +1,16 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { TextInput, Text, StyleSheet } from "react-native";
+
+import Card from "../components/Card";
 
 const LoginScreen = props => {
   return (
-    <View style={styles.container}>
-      <Text>Login Screen</Text>
-    </View>
+    <Card>
+      <Text>username</Text>
+      <TextInput />
+      <Text>password</Text>
+      <TextInput />
+    </Card>
   );
 };
 
