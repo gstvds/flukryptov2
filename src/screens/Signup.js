@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SingupScreen;
+export default SignupScreen;
