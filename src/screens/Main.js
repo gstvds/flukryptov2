@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -56,6 +56,7 @@ const MainScreen = props => {
     }
     // setUsdPrice(currencyValue.usdValue);
     // setEurPrice(currencyValue.eurValue);
+    console.log(allData);
   };
 
   useEffect(() => {
@@ -94,7 +95,7 @@ const MainScreen = props => {
               <Text style={styles.flatText}>{itemData.eur}</Text>
             </View>
           )}
-          keyExtractor={itemData => itemData.data}
+          keyExtractor={itemData => itemData}
         />
         {/* <FlatList
           data={cryptoData}
