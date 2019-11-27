@@ -16,5 +16,8 @@ module.exports = {
     sourceType: "module"
   },
   plugins: ["react", "react-hooks"],
-  rules: {}
+  rules: {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
 };
