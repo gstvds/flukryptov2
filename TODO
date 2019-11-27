@@ -3,5 +3,9 @@
 ☐ Ver como logar com firebase usando apenas user e password
 ✔ Renderizar uma lista contendo as 10 principais criptomoedas @done(19-11-26 23:31)
   ☐ Renderizar a lista em um único componente
-☐ Criar uma segunda tela para pesquisar as criptomoedas
-☐ Criar um headerButton para fazer logout
+✔ Criar uma segunda tela para pesquisar as criptomoedas @done(19-11-27 04:09)
+  ☐ Checar o motivo de trocar o value do RNPicker fazer com que ele perca os dados e fique em branco
+  ☐ Verificar o uso de redux para armazenar os dados obtidos da API
+  Olhar o products.js como base
+✔ Criar um headerButton para fazer logout @done(19-11-27 04:10)
+  ☐ Fazer o logout funcional
