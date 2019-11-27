@@ -1,0 +1,7 @@
+#MAIN TODOS
+☐ Configurar login e signup com firebase
+☐ Ver como logar com firebase usando apenas user e password
+✔ Renderizar uma lista contendo as 10 principais criptomoedas @done(19-11-26 23:31)
+  ☐ Renderizar a lista em um único componente @started(19-11-26 23:32)
+☐ Criar uma segunda tela para pesquisar as criptomoedas
+☐ Criar um headerButton para fazer logout
