@@ -1,11 +1,14 @@
 import React from "react";
 import { Platform } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
 
 import LoginScreen from "../screens/Login";
 import MainScreen from "../screens/Main";
+import SearchScreen from "../screens/Search";
 import SignupScreen from "../screens/Signup";
 import Colors from "../constants/Colors";
 
@@ -25,8 +28,46 @@ const HomeNavigator = createStackNavigator(
   }
 );
 
+const SearchNavigator = createStackNavigator(
+  {
+    Search: SearchScreen
+  },
+  {
+    defaultNavigationOptions: defaultNavOptions
+  }
+);
+
+const tabScreenConfig = {
+  Main: {
+    screen: HomeNavigator,
+    navigationOptions: {
+      tabBarIcon: tabInfo => {
+        return <Ionicons name="ios-home" size={23} color={tabInfo.tintColor} />;
+      },
+      tabBarColor: Colors.primary
+    }
+  },
+  Search: {
+    screen: SearchNavigator,
+    navigationOptions: {
+      tabBarIcon: tabInfo => {
+        return (
+          <Ionicons name="ios-search" size={23} color={tabInfo.tintColor} />
+        );
+      }
+    }
+  }
+};
+
+const TabNavigator = createBottomTabNavigator(tabScreenConfig, {
+  tabBarOptions: {
+    showLabel: false,
+    activeTintColor: Colors.primary
+  }
+});
+
 const MainNavigator = createSwitchNavigator({
-  Home: HomeNavigator
+  Main: TabNavigator
 });
 
 export default createAppContainer(MainNavigator);
