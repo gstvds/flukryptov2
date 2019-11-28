@@ -1,6 +1,9 @@
 #MAIN TODOS
-☐ Configurar login e signup com firebase
-☐ Ver como logar com firebase usando apenas user e password
+✔ Configurar login e signup com firebase @done(19-11-27 22:32)
+✘ Ver como logar com firebase usando apenas user e password @cancelled(19-11-27 22:32)
+✔ Fazer o logout funcional @done(19-11-27 22:40)
+✔ Criar logout no header do app, nas duas telas @done(19-11-27 22:40)
+✔ Manuzear os erros de email já existe, email não cadastrado, etc @done(19-11-27 22:32)
 ✔ Renderizar uma lista contendo as 10 principais criptomoedas @done(19-11-26 23:31)
   ☐ Renderizar a lista em um único componente
   ☐ Verificar possibilidade de usar Redux para armazenar os valores e renderizar em único componente
@@ -11,4 +14,3 @@
   Olhar o products.js como base
   ☐ Renderizar os dados inseridos pelo picker chamados na API (talvez redux?)
 ✔ Criar um headerButton para fazer logout @done(19-11-27 04:10)
-  ☐ Fazer o logout funcional
