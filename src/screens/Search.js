@@ -1,19 +1,28 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Text, StyleSheet, Button, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  ScrollView,
+  Platform
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import RNPickerSelect from "react-native-picker-select";
-
-import axios from "axios";
-
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import axios from "axios";
 
 import Colors from "../constants/Colors";
 import CustomHeaderButton from "../components/HeaderButton";
 import { Currency, Data } from "../data/currency";
 import * as searchActions from "../store/actions/search";
+import * as authActions from "../store/actions/auth";
+
 import Search from "../models/search-data";
 
 const SearchScreen = props => {
+  const { navigation } = props;
+
   const [fsym, setFsym] = useState("");
   const [tsym, setTsym] = useState("");
   const [limit, setLimit] = useState("");
@@ -33,6 +42,14 @@ const SearchScreen = props => {
   useEffect(() => {
     loadData();
   }, [loadData, dispatch]);
+
+  const logoutHandler = useCallback(() => {
+    dispatch(authActions.logout());
+  }, [dispatch]);
+
+  useEffect(() => {
+    navigation.setParams({ logout: logoutHandler });
+  }, [logoutHandler]);
 
   const searchDailyData = async () => {
     const response = await axios.get(
@@ -112,7 +129,14 @@ SearchScreen.navigationOptions = navData => {
     headerTitle: "Search",
     headerRight: (
       <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-        <Item title="Logout" iconName="ios-log-out" onPress={() => {}} />
+        <Item
+          title="Logout"
+          iconName={Platform.OS === "android" ? "md-log-out" : "ios-log-out"}
+          onPress={() => {
+            navData.navigation.getParam("logout");
+            navData.navigation.navigate("Login");
+          }}
+        />
       </HeaderButtons>
     )
   };

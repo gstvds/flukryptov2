@@ -5,15 +5,20 @@ import {
   StyleSheet,
   Button,
   ActivityIndicator,
-  FlatList
+  FlatList,
+  Platform
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 
 import CustomHeaderButton from "../components/HeaderButton";
 import Initial from "../models/initial-data";
+import * as authActions from "../store/actions/auth";
 
 const MainScreen = props => {
+  const { navigation } = props;
+
   const [cryptoData, setCryptoData] = useState([]);
   const [usdPrice, setUsdPrice] = useState([]);
   const [eurPrice, setEurPrice] = useState([]);
@@ -32,6 +37,16 @@ const MainScreen = props => {
   };
 
   const allFetchedData = [];
+
+  const dispatch = useDispatch();
+
+  const logoutHandler = useCallback(() => {
+    dispatch(authActions.logout());
+  }, [dispatch]);
+
+  useEffect(() => {
+    navigation.setParams({ logout: logoutHandler });
+  }, [logoutHandler]);
 
   const dataHandler = async () => {
     const Crypto = await axios.get(
@@ -150,7 +165,14 @@ MainScreen.navigationOptions = navData => {
     headerTitle: "Cryptocurrency",
     headerRight: (
       <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-        <Item title="Logout" iconName="ios-log-out" onPress={() => {}} />
+        <Item
+          title="Logout"
+          iconName={Platform.OS === "android" ? "md-log-out" : "ios-log-out"}
+          onPress={() => {
+            navData.navigation.getParam("logout");
+            navData.navigation.navigate("Login");
+          }}
+        />
       </HeaderButtons>
     )
   };
