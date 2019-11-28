@@ -1,7 +1,6 @@
 class Search {
-  constructor(timeFrom, timeTo, high, low, open, close) {
-    this.timeFrom = timeFrom;
-    this.timeTo = timeTo;
+  constructor(day, high, low, open, close) {
+    this.day = day;
     this.high = high;
     this.low = low;
     this.open = open;
