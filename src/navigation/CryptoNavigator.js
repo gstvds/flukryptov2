@@ -14,9 +14,9 @@ import Colors from "../constants/Colors";
 
 const defaultNavOptions = {
   headerStyle: {
-    backgroundColor: Platform.OS === "android" ? Colors.primary : ""
+    backgroundColor: Platform.OS === "android" ? Colors.primary : "#333"
   },
-  headerTintColor: Platform.OS === "android" ? "white" : Colors.primary
+  headerTintColor: Platform.OS === "android" ? "#333" : Colors.primary
 };
 
 const HomeNavigator = createStackNavigator(
@@ -62,7 +62,10 @@ const tabScreenConfig = {
 const TabNavigator = createBottomTabNavigator(tabScreenConfig, {
   tabBarOptions: {
     showLabel: false,
-    activeTintColor: Colors.primary
+    activeTintColor: Colors.primary,
+    tabStyle: {
+      backgroundColor: "#333"
+    }
   }
 });
 
