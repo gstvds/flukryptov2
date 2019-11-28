@@ -66,7 +66,18 @@ const TabNavigator = createBottomTabNavigator(tabScreenConfig, {
   }
 });
 
+const LoginNavigator = createStackNavigator(
+  {
+    Login: LoginScreen,
+    Signup: SignupScreen
+  },
+  {
+    defaultNavigationOptions: defaultNavOptions
+  }
+);
+
 const MainNavigator = createSwitchNavigator({
+  Login: LoginNavigator,
   Main: TabNavigator
 });
 
