@@ -15,26 +15,14 @@ import axios from "axios";
 import CustomHeaderButton from "../components/HeaderButton";
 import Initial from "../models/initial-data";
 import * as authActions from "../store/actions/auth";
+import List from "../components/List";
 
 const MainScreen = props => {
   const { navigation } = props;
-
-  const [cryptoData, setCryptoData] = useState([]);
-  const [usdPrice, setUsdPrice] = useState([]);
-  const [eurPrice, setEurPrice] = useState([]);
   const [allData, setAllData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  let keyData = [];
-  let currencyValue = {
-    usdValue: [],
-    eurValue: []
-  };
 
-  let customData = {
-    data: [],
-    usd: [],
-    eur: []
-  };
+  let keyData = [];
 
   const allFetchedData = [];
 
@@ -50,13 +38,18 @@ const MainScreen = props => {
 
   const dataHandler = async () => {
     const Crypto = await axios.get(
-      "https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD"
+      "https://min-api.cryptocompare.com/data/top/totaltoptiervolfull?limit=10&tsym=USD",
+      {
+        headers: {
+          authorization:
+            "Apikey 1b77159fd738954a7062f9ac985943cc43c326c63b70cec8613ebb96d36b3468"
+        }
+      }
     );
     const CryptoData = await Crypto.data.Data;
     for (var [key, value] of Object.entries(CryptoData)) {
       keyData.push(value.CoinInfo.Name);
     }
-    setCryptoData(keyData);
     const currency = "USD,EUR";
     const response = await axios.get(
       `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${keyData}&tsyms=${currency}`,
@@ -69,19 +62,11 @@ const MainScreen = props => {
     );
     const responseData = await response.data;
     for (var [key, value] of Object.entries(responseData)) {
-      currencyValue.usdValue.push(value.USD);
-      currencyValue.eurValue.push(value.EUR);
-      customData.data.push(key);
-      customData.usd.push(value.USD);
-      customData.eur.push(value.EUR);
+      usdValue = `$ ${value.USD.toFixed(2)}`;
+      eurValue = `€ ${value.EUR.toFixed(2)}`;
+      allFetchedData.push(new Initial(key, usdValue, eurValue));
     }
-    allFetchedData.push(
-      new Initial(customData.data, customData.usd, customData.eur)
-    );
     setAllData(allFetchedData);
-    setUsdPrice(currencyValue.usdValue);
-    setEurPrice(currencyValue.eurValue);
-    console.log(allData);
   };
 
   useEffect(() => {
@@ -93,16 +78,6 @@ const MainScreen = props => {
     loadData();
   }, []);
 
-  function List({ data, usd, eur }) {
-    return (
-      <View>
-        <Text style={styles.flatText}>{data}</Text>
-        <Text style={styles.flatText}>{usd}</Text>
-        <Text style={styles.flatText}>{eur}</Text>
-      </View>
-    );
-  }
-
   return isLoading ? (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <ActivityIndicator size="large" coolor="black" />
@@ -110,10 +85,8 @@ const MainScreen = props => {
   ) : (
     <View style={styles.container}>
       <View style={styles.mainTitle}>
-        <Text style={styles.mainTitleText}>
-          RANKING 10 CRIPTOMOEDAS (POR VOLUME)
-        </Text>
-        <Button title="WTF" onPress={dataHandler} />
+        <Text style={styles.mainTitleText}>RANKING 10 CRIPTOMOEDAS</Text>
+        <Text style={styles.mainTitleText}>(por volume em USD)</Text>
       </View>
       <View style={styles.title}>
         <Text style={styles.titleText}>Criptomoeda</Text>
@@ -122,39 +95,12 @@ const MainScreen = props => {
       </View>
       <View style={styles.listContainer}>
         <FlatList
-          data={cryptoData}
+          data={allData}
           renderItem={({ item }) => (
-            <View>
-              <Text style={styles.flatText}>{item}</Text>
-            </View>
+            <List data={item.data} usd={item.usd} eur={item.eur} />
           )}
-          keyExtractor={item => item}
+          keyExtractor={item => item.data}
         />
-        <FlatList
-          data={usdPrice}
-          renderItem={({ item }) => (
-            <Text style={styles.flatText}>{JSON.stringify(item)}</Text>
-          )}
-          keyExtractor={item => item.toString()}
-        />
-        <FlatList
-          data={eurPrice}
-          renderItem={({ item }) => (
-            <Text style={styles.flatText}>{JSON.stringify(item)}</Text>
-          )}
-          keyExtractor={item => item.toString()}
-        />
-        {/* <FlatList
-            data={allData}
-            renderItem={({ itemData }) => (
-              <List
-                data={itemData.data}
-                usd={itemData.usd}
-                eur={itemData.eur}
-              />
-            )}
-            keyExtractor={itemData => itemData}
-          /> */}
       </View>
     </View>
   );
@@ -162,7 +108,7 @@ const MainScreen = props => {
 
 MainScreen.navigationOptions = navData => {
   return {
-    headerTitle: "Cryptocurrency",
+    headerTitle: "Ranking",
     headerRight: (
       <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
         <Item
@@ -180,7 +126,8 @@ MainScreen.navigationOptions = navData => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#333"
   },
   mainTitle: {
     alignItems: "center",
@@ -188,30 +135,23 @@ const styles = StyleSheet.create({
   },
   mainTitleText: {
     fontSize: 20,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    color: "white"
   },
   title: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10
+    padding: 10,
+    marginHorizontal: 5
   },
   titleText: {
     fontSize: 18,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    color: "white"
   },
   listContainer: {
     flexDirection: "row",
     justifyContent: "space-between"
-  },
-  flatText: {
-    flex: 1,
-    padding: 5,
-    marginBottom: 5,
-    marginHorizontal: 15,
-    fontSize: 23,
-    borderWidth: 1,
-    borderColor: "black",
-    textAlign: "center"
   }
 });
 

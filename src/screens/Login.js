@@ -141,7 +141,7 @@ const LoginScreen = props => {
                   props.navigation.navigate("Signup");
                 }}
               >
-                <Text>
+                <Text style={{ color: "white" }}>
                   Não possui conta ainda?{" "}
                   <Text style={{ color: Colors.primary }}>Criar uma</Text>
                 </Text>
@@ -162,7 +162,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: "#333"
   },
   loginContainer: {
     width: "80%",

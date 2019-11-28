@@ -4,8 +4,9 @@ import {
   Text,
   StyleSheet,
   Button,
-  ScrollView,
-  Platform
+  FlatList,
+  Platform,
+  ActivityIndicator
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import RNPickerSelect from "react-native-picker-select";
@@ -27,6 +28,16 @@ const SearchScreen = props => {
   const [tsym, setTsym] = useState("");
   const [limit, setLimit] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [allData, setAllData] = useState([]);
+  const [dayTitle, setDayTitle] = useState("");
+  const [openTitle, setOpenTitle] = useState("");
+  const [highTitle, setHighTitle] = useState("");
+  const [lowTitle, setLowTitle] = useState("");
+  const [closeTitle, setCloseTitle] = useState("");
+
+  const [fromFull, setFromFull] = useState("");
+  const [toFull, setToFull] = useState("");
+
   const data = useSelector(state => state.search.datas);
 
   const displayData = [];
@@ -53,24 +64,56 @@ const SearchScreen = props => {
 
   const searchDailyData = async () => {
     const response = await axios.get(
-      `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${fsym}&tsym=${tsym}&limit=${limit}`
+      `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${fsym}&tsym=${tsym}&limit=${limit}`,
+      {
+        headers: {
+          authorization:
+            "Apikey 1b77159fd738954a7062f9ac985943cc43c326c63b70cec8613ebb96d36b3468"
+        }
+      }
     );
     const responseData = response.data.Data;
-    const timeFrom = new Date(responseData.TimeFrom * 1000).toUTCString();
-    const timeTo = new Date(responseData.TimeTo * 1000).toUTCString();
-    const highValue = [];
-    const lowValue = [];
-    const openValue = [];
-    const closeValue = [];
+    const timeFrom = new Date(responseData.TimeFrom * 1000);
+    const fromDate = timeFrom.getDate();
+    const fromMonth = timeFrom.getMonth() + 1;
+    const fromYear = timeFrom.getFullYear();
+    const fullDateFrom = `${fromDate}/${fromMonth}/${fromYear} a`;
+    setFromFull(fullDateFrom);
+    const timeTo = new Date(responseData.TimeTo * 1000);
+    const toDate = timeTo.getDate();
+    const toMonth = timeTo.getMonth() + 1;
+    const toYear = timeTo.getFullYear();
+    const fullDateTo = `${toDate}/${toMonth}/${toYear}`;
+    setToFull(fullDateTo);
     for (var [key, value] of Object.entries(responseData.Data)) {
-      highValue.push(value.high);
-      lowValue.push(value.low);
-      openValue.push(value.open);
-      closeValue.push(value.close);
+      time = new Date(value.time * 1000);
+      day = time.getDate();
+      month = time.getMonth() + 1;
+      fullTime = `${day}/${month}`;
+      high = value.high.toFixed(2);
+      low = value.low.toFixed(2);
+      open = value.open.toFixed(2);
+      close = value.close.toFixed(2);
+      displayData.push(new Search(fullTime, high, low, open, close));
     }
-    displayData.push(
-      new Search(timeFrom, timeTo, highValue, lowValue, openValue, closeValue)
-    );
+    setAllData(displayData);
+    setDayTitle("Data");
+    setOpenTitle("Abertura");
+    setHighTitle("Máximo");
+    setLowTitle("Mínimo");
+    setCloseTitle("Fechamento");
+    console.log(responseData);
+  };
+
+  const clearScreenHandler = () => {
+    setAllData([]);
+    setDayTitle("");
+    setOpenTitle("");
+    setHighTitle("");
+    setLowTitle("");
+    setCloseTitle("");
+    setFromFull("");
+    setToFull("");
   };
 
   const pickerStyle = {
@@ -89,7 +132,11 @@ const SearchScreen = props => {
     underline: { borderTopWidth: 0 }
   };
 
-  return (
+  return isLoading ? (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" coolor="black" />
+    </View>
+  ) : (
     <View style={styles.container}>
       <View style={styles.pickerContainer}>
         <Text style={styles.pickerTitle}>Escolha uma Criptomoeda</Text>
@@ -113,20 +160,52 @@ const SearchScreen = props => {
           style={{ ...pickerStyle }}
           useNativeAndroidPickerStyle={false}
         />
-        <Button
-          title="Submit"
-          onPress={searchDailyData}
-          color={Colors.primary}
-        />
+        <View style={styles.buttons}>
+          <Button
+            title="Pesquisar"
+            onPress={searchDailyData}
+            color={Colors.primary}
+          />
+          <Button
+            title="Limpar"
+            onPress={clearScreenHandler}
+            color={Colors.primary}
+          />
+        </View>
       </View>
-      <ScrollView></ScrollView>
+      <View style={styles.dateTitle}>
+        <Text style={styles.dateTitleText}>
+          Período: {fromFull} {toFull}
+        </Text>
+      </View>
+      <View style={styles.title}>
+        <Text style={styles.titleText}>{dayTitle}</Text>
+        <Text style={styles.titleText}>{openTitle}</Text>
+        <Text style={styles.titleText}>{highTitle}</Text>
+        <Text style={styles.titleText}>{lowTitle}</Text>
+        <Text style={styles.titleText}>{closeTitle}</Text>
+      </View>
+      <FlatList
+        data={allData}
+        extraData={allData}
+        keyExtractor={item => item.day}
+        renderItem={({ item }) => (
+          <View style={styles.flatView}>
+            <Text style={styles.flatText}>{item.day}</Text>
+            <Text style={styles.flatText}>{item.open}</Text>
+            <Text style={styles.flatText}>{item.high}</Text>
+            <Text style={styles.flatText}>{item.low}</Text>
+            <Text style={styles.flatText}>{item.close}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 };
 
 SearchScreen.navigationOptions = navData => {
   return {
-    headerTitle: "Search",
+    headerTitle: "Buscar",
     headerRight: (
       <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
         <Item
@@ -144,18 +223,58 @@ SearchScreen.navigationOptions = navData => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#333"
   },
   pickerTitle: {
     fontSize: 18,
     fontWeight: "bold",
     marginHorizontal: 5,
-    marginTop: 5
+    marginTop: 5,
+    color: "white"
   },
   pickerContainer: {
     marginTop: 5,
     padding: 5,
     marginBottom: 10
+  },
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "space-around"
+  },
+  dateTitle: {
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  dateTitleText: {
+    fontWeight: "bold",
+    fontSize: 18,
+    color: "white"
+  },
+  title: {
+    flexDirection: "row",
+    justifyContent: "space-around"
+  },
+  titleText: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 5,
+    marginHorizontal: 5,
+    padding: 4,
+    color: "white"
+  },
+  flatView: {
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  flatText: {
+    flex: 1,
+    padding: 4,
+    marginBottom: 5,
+    marginHorizontal: 5,
+    fontSize: 15,
+    textAlign: "center",
+    color: "white"
   }
 });
 
