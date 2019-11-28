@@ -5,8 +5,8 @@
 ✔ Criar logout no header do app, nas duas telas @done(19-11-27 22:40)
 ✔ Manuzear os erros de email já existe, email não cadastrado, etc @done(19-11-27 22:32)
 ✔ Renderizar uma lista contendo as 10 principais criptomoedas @done(19-11-26 23:31)
-  ☐ Renderizar a lista em um único componente
-  ☐ Verificar possibilidade de usar Redux para armazenar os valores e renderizar em único componente
+  ✔ Renderizar a lista em um único componente @done(19-11-28 12:24)
+  ✔ Verificar possibilidade de usar Redux para armazenar os valores e renderizar em único componente @done(19-11-28 12:24)
 ✔ Criar uma segunda tela para pesquisar as criptomoedas @done(19-11-27 04:09)
   ✔ Checar o motivo de trocar o value do RNPicker fazer com que ele perca os dados e fique em branco @done(19-11-27 12:38)
   ✔ Verificar o uso de redux para armazenar os dados obtidos da API @done(19-11-27 12:38)
