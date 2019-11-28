@@ -27,5 +27,6 @@ export const Data = [
   { label: "Ontem", value: "1" },
   { label: "Últimos 7 dias", value: "7" },
   { label: "Últimos 15 dias", value: "15" },
-  { label: "Últimos 30 dias", value: "30" }
+  { label: "Últimos 30 dias", value: "30" },
+  { label: "Um ano", value: "365" }
 ];

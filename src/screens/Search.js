@@ -102,7 +102,6 @@ const SearchScreen = props => {
     setHighTitle("Máximo");
     setLowTitle("Mínimo");
     setCloseTitle("Fechamento");
-    console.log(responseData);
   };
 
   const clearScreenHandler = () => {
