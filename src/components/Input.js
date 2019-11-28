@@ -71,10 +71,12 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   label: {
+    color: "white",
     fontWeight: "bold",
     marginVertical: 8
   },
   input: {
+    color: "white",
     paddingHorizontal: 2,
     paddingVertical: 5,
     borderBottomColor: "#CCC",
